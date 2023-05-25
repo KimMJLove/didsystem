@@ -1,0 +1,46 @@
+package main
+
+import (
+    "crypto/sha256"
+    "fmt"
+    "encoding/hex"
+    "github.com/mr-tron/base58"
+)
+
+func GenerateDID() string {
+    // 生成随机数作为DID的唯一标识
+    uniqueID := "1234567890abcdef"
+    // 将唯一标识进行哈希运算，生成DID
+    didHash := sha256.Sum256([]byte(uniqueID))
+    did := base58.Encode(didHash[:])
+    return did
+}
+
+func ValidateDID(did string) bool {
+    // 解码DID
+    didBytes, err := base58.Decode(did)
+    if err != nil {
+        return false
+    }
+    // 获取DID的哈希值
+    didHash := sha256.Sum256(didBytes[:len(didBytes)-4])
+    // 获取DID的校验码
+    didCheck := didBytes[len(didBytes)-4:]
+    // 对DID的哈希值进行两次哈希运算，得到校验码
+    hash1 := sha256.Sum256(didHash[:])
+    hash2 := sha256.Sum256(hash1[:])
+    check := hash2[:4]
+    // 判断校验码是否一致
+    if hex.EncodeToString(check) == hex.EncodeToString(didCheck) {
+        return true
+    } else {
+        return false
+    }
+}
+
+func main() {
+    did := GenerateDID()
+    fmt.Println("Generated DID: ", did)
+    isValid := ValidateDID(did)
+    fmt.Println("Is valid DID: ", isValid)
+}

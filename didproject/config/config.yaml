@@ -1,0 +1,40 @@
+server:
+  host: localhost         #后端服务地址
+  port: 8000              #后端服务接口
+
+postgresql:
+  type: postgresql
+  host: "192.168.88.77"   # 数据库地址
+  port: 5432              # 数据库端口号
+  user: "did"             # 数据库用户名
+  password: "diddev"      # 数据库密码
+  dbname: "didtest"       # 数据库名称
+
+mongoddb:
+  type: mongodb
+  host: "192.168.88.77"   # 数据库地址
+  port: 27017             # 数据库端口号
+  user: "did"             # 数据库用户名
+  password: "diddev"      # 数据库密码
+  dbname: "didtest"       # 数据库名称
+
+mysql:
+  type: mongodb
+  host: "192.168.88.77"   # 数据库地址
+  port: 3306              # 数据库端口号
+  user: "did"             # 数据库用户名
+  password: "diddev"      # 数据库密码
+  dbname: "didtest"       # 数据库名称
+
+redis:
+  type: redis
+  host: "192.168.88.77"   # redis地址
+  port: 6379              # redis端口号
+  password: "diddev"      # redis密码
+
+elasticsearch:
+  type: elasticsearch
+  host: "192.168.88.77"   # es地址
+  port: 9200              # es端口号
+  user: "elastic"         #es用户
+  password: "admin123"    # es密码

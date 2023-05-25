@@ -1,0 +1,363 @@
+前端登录模块：负责用户的登录和注册
+    1、注册接口：用户通过该接口完成注册操作，提交注册信息，并在服务端存储相应的用户名与密码。
+        请求方式：POST
+        请求路径：/system/register
+        请求参数：
+            username	string	用户名
+            password	string	密码
+        响应数据：
+            status      int     状态码（200表示成功，400表示请求参数错误，500表示服务器内部错误）
+            message     string  响应信息(响应成功，响应失败)
+            didcretime	int64	时间戳
+        存储数据
+            username	string	用户名
+            password	string	密码
+            didcretime	int64	时间戳           
+    2、登录接口：用户通过该接口进行登录操作，提交登录信息，服务端验证信息并返回登录状态和登录时间戳。
+        请求方式：POST
+        请求路径：/system/register
+        请求参数：
+            username	string	用户名     
+            logintime	int64	登录时间戳
+        响应数据：
+            status      int     状态码（200表示成功，400表示请求参数错误，500表示服务器内部错误）
+            message     string  响应信息(响应成功，响应失败)
+            ip      	string	登录ip地址            
+            logintime	int64	登录时间戳
+        存储数据
+            ip      	string	登录ip地址        
+            logintime	int64	登录时间戳
+    3、修改密码接口：用户通过该接口进行修改密码操作，提交登录信息，服务端修改用户名相应的密码。
+        请求方式：POST
+        请求路径：/system/update
+        请求参数：
+            username	string	用户名
+            password	string	密码
+        响应数据：
+            status      int     状态码（200表示成功，400表示请求参数错误，500表示服务器内部错误）
+            message     string  响应信息(响应成功，响应失败)
+            didcretime	int64	时间戳
+        修改数据
+            username	string	用户名
+            password	string	密码
+            didcretime	int64	时间戳        
+
+数字身份模块：负责数字身份的管理，包括管理用户的DID、DID文档和公私钥
+    1、创建接口：用户通过该接口完成创建操作，在服务端生成DID、DID文档以及公私钥。
+        请求方式：POST
+        请求路径：/dids/create
+        请求参数：
+            did	        string	DID标识符
+            name	    string	DID文档名称
+            publicKey	array	公钥信息列表，数组，包含以下参数：
+                - id: string，公钥ID
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - controller: string，公钥控制器DID
+                - publicKeyBase58: string，公钥Base58编码
+            authen  	array   权限信息
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - publicKeyBase58: string，公钥Base58编码
+            service     array   服务数据
+                - id: string，公钥ID
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+        响应数据：
+            status      int     状态码（200表示成功，400表示请求参数错误，500表示服务器内部错误）
+            message     string  响应信息(响应成功，响应失败)
+            data	    object	返回的数据对象
+            updatedt	string	DID文档更新时间
+        存储数据
+            did	        string	DID标识符
+            name	    string	DID文档名称
+            publicKey	array	公钥信息列表，数组，包含以下参数：
+                - id: string，公钥ID
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - controller: string，公钥控制器DID
+                - publicKeyBase58: string，公钥Base58编码
+            authen  	array   权限信息
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - publicKeyBase58: string，公钥Base58编码
+            service     array   服务数据
+                - id: string，公钥ID
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+            updatedt	 string	DID文档更新时间
+    2、DID查看接口：用户通过该接口完成查看操作，在服务端查看用户已创建的DID信息。
+        请求方式：GET
+        请求路径：/dids/check
+        请求参数：
+            did	        string	DID标识符
+        响应数据：
+            status      int     状态码（200表示成功，400表示请求参数错误，500表示服务器内部错误）
+            message     string  响应信息(响应成功，响应失败)
+            did	        string	DID标识符
+            chectt  	int64	查看时间戳
+        存储数据
+            chectt  	int64	查看时间戳
+    3、DID文档查看接口：用户通过该接口完成查看操作，在服务端查看用户已创建的DID文档信息。
+        请求方式：POST
+        请求路径：/dids/docs/check
+        请求参数：
+            did	        string	DID标识符
+            username	string	用户名
+            password	string	密码
+        响应数据：
+            status      int     状态码（200表示成功，400表示请求参数错误，500表示服务器内部错误）
+            message     string  响应信息(响应成功，响应失败)
+            data	    object	返回的数据对象
+            docschecht	string	DID文档查看时间
+        存储数据
+            docschecht	string	DID文档查看时间
+    4、DID文档更新接口：用户通过该接口完成查看操作，在服务端更新用户已创建的DID文档信息。
+        请求方式：POST
+        请求路径：/dids/docs/update
+        请求参数：
+            did	        string	DID标识符
+            username	string	用户名
+            password	string	密码
+            name	    string	DID文档名称
+            publicKey	array	公钥信息列表，数组，包含以下参数：
+                - id: string，公钥ID
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - controller: string，公钥控制器DID
+                - publicKeyBase58: string，公钥Base58编码
+            authen  	array   权限信息
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - publicKeyBase58: string，公钥Base58编码
+            service     array   服务数据
+                - id: string，公钥ID
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+        响应数据：
+            status      int     状态码（200表示成功，400表示请求参数错误，500表示服务器内部错误）
+            message     string  响应信息(响应成功，响应失败)
+            data	    object	返回的数据对象
+            updatedt	string	DID文档更新时间
+        修改数据
+            did	        string	DID标识符
+            name	    string	DID文档名称
+            publicKey	array	公钥信息列表，数组，包含以下参数：
+                - id: string，公钥ID
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - controller: string，公钥控制器DID
+                - publicKeyBase58: string，公钥Base58编码
+            authen  	array   权限信息
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - publicKeyBase58: string，公钥Base58编码
+            service     array   服务数据
+                - id: string，公钥ID
+                - type: string，公钥类型，如"RsaVerif
+            updatedt	string	DID文档更新时间                
+
+注册中心模块：
+    1、数字身份管理接口
+        请求方式：POST
+        请求路径：/apim/dids
+        请求参数：
+            did	        string	DID标识符
+            docsname	    string	DID文档名称
+            publicKey	array	公钥信息列表，数组，包含以下参数：
+                - id: string，公钥ID
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - controller: string，公钥控制器DID
+                - publicKeyBase58: string，公钥Base58编码
+            authen  	array   权限信息
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - publicKeyBase58: string，公钥Base58编码
+            service     array   服务数据
+                - id: string，公钥ID
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+        响应数据：
+            status      int     状态码（200表示成功，400表示请求参数错误，500表示服务器内部错误）
+            message     string  响应信息(响应成功，响应失败)
+            data	    object	返回的数据对象
+            updatedt	string	DID文档更新时间
+        存储数据
+            did	        string	DID标识符
+            docsname	    string	DID文档名称
+            publicKey	array	公钥信息列表，数组，包含以下参数：
+                - id: string，公钥ID
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - controller: string，公钥控制器DID
+                - publicKeyBase58: string，公钥Base58编码
+            authen  	array   权限信息
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - publicKeyBase58: string，公钥Base58编码
+            service     array   服务数据
+                - id: string，公钥ID
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+            updatedt	 string	DID文档更新时间
+    2、公证中心管理接口
+        请求方式：POST
+        请求路径：/apim/identity
+        请求参数：
+            name	    string	公证中心名称
+            id  	    string	公证中心id
+            type        string  公证中心类型
+            publicKey	array	公钥信息列表，数组，包含以下参数：
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - publicKeyBase58: string，公钥Base58编码
+        响应数据：
+            status      int     状态码（200表示成功，400表示请求参数错误，500表示服务器内部错误）
+            message     string  响应信息(响应成功，响应失败)
+            data	    object	返回的数据对象
+            updatedt	string	更新时间
+        存储数据
+            name	    string	公证中心名称
+            id  	    string	公证中心id
+            type        string  公证中心类型
+            publicKey	array	公钥信息列表，数组，包含以下参数：
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - publicKeyBase58: string，公钥Base58编码
+            updatedt	 string	更新时间
+    3、应用管理功能接口
+        请求方式：POST
+        请求路径：/apim/apps
+        请求参数：
+            name	    string	应用名称
+            id  	    string	应用id
+            type        string  应用类型
+            publicKey	array	公钥信息列表，数组，包含以下参数：
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - publicKeyBase58: string，公钥Base58编码
+            group       array   公证申明属性
+                - name:string，公证中心名称
+                - id: string，公证中心id
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - authen：string，权限信息
+        响应数据：
+            status      int     状态码（200表示成功，400表示请求参数错误，500表示服务器内部错误）
+            message     string  响应信息(响应成功，响应失败)
+            data	    object	返回的数据对象
+            updatedt	string	更新时间
+        存储数据
+            name	    string	应用名称
+            id  	    string	应用id
+            type        string  应用类型
+            publicKey	array	公钥信息列表，数组，包含以下参数：
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - publicKeyBase58: string，公钥Base58编码
+            group       array   公证申明属性
+                - name:string，公证中心名称
+                - id: string，公证中心id
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - authen：string，权限信息
+            updatedt	string	更新时间
+
+应用授权模块：
+    应用接入/授权功能
+        请求方式：POST
+        请求路径：/apim/apps
+        请求参数：
+            name	    string	应用名称
+            did  	    string	应用did
+            type        string  应用类型
+            publicKey	array	公钥信息列表，数组，包含以下参数：
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - publicKeyBase58: string，公钥Base58编码
+            group       array   公证申明属性
+                - name:string，公证中心名称
+                - id: string，公证中心id
+                - urls: string 应用链接
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - authen：string，权限信息
+        响应数据：
+            status      int     状态码（200表示成功，400表示请求参数错误，500表示服务器内部错误）
+            message     string  响应信息(响应成功，响应失败)
+            data	    object	返回的数据对象
+            updatedt	string	更新时间
+        存储数据
+            name	    string	应用名称
+            id  	    string	应用id
+            type        string  应用类型
+            publicKey	array	公钥信息列表，数组，包含以下参数：
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - publicKeyBase58: string，公钥Base58编码
+            group       array   公证申明属性
+                - name:string，公证中心名称
+                - id: string，公证中心id
+                - urls: string 应用链接
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - authen：string，权限信息
+            updatedt	string	更新时间
+    应用删除功能
+        请求方式：POST
+        请求路径：/apim/apps
+        请求参数：
+            name	    string	应用名称
+            id  	    string	应用id
+            type        string  应用类型
+            publicKey	array	公钥信息列表，数组，包含以下参数：
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - publicKeyBase58: string，公钥Base58编码
+            group       array   公证申明属性
+                - name:string，公证中心名称
+                - id: string，公证中心id
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - authen：string，权限信息
+        响应数据：
+            status      int     状态码（200表示成功，400表示请求参数错误，500表示服务器内部错误）
+            message     string  响应信息(响应成功，响应失败)
+            data	    object	返回的数据对象
+            updatedt	string	更新时间
+        存储数据
+            name	    string	应用名称
+            id  	    string	应用id
+            type        string  应用类型
+            publicKey	array	公钥信息列表，数组，包含以下参数：
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - publicKeyBase58: string，公钥Base58编码
+            group       array   公证申明属性
+                - name:string，公证中心名称
+                - id: string，公证中心id
+                - type: string，公钥类型，如"RsaVerificationKey2018"
+                - authen：string，权限信息
+            updatedt	string	更新时间
+
+日志审计模块：
+    操作日志
+        请求方式：POST
+        请求路径：/system/register
+    行为日志(web)
+        请求方式：POST
+        请求路径：/logger/operation
+
+数据保护模块：
+    可持续化存储(db)
+    本地存储(db)
+    区块链接入(chainblock)
+    数据库加密(server)
+
+其他功能模块：
+    公钥获取功能：已登录的用户可以通过该接口获取其did对应的公钥。
+    共私钥验证功能：已登录的用户可以通过该功能获取其did对应的私钥。
+    公私钥对生成功能：已登录的用户可以通过该接口重新生成其did对应的密钥对。
+
+数据库设计
+    system（用户登录信息表）
+            username	string	用户名
+            password	string	密码
+            did	        string	DID
+            publicKey	string	公钥，Base64编码
+            privateKey	string	私钥，Base64编码
+            didcretime	int64	时间戳
+    didsdocs（DID文档表）
+    apim
+    logger（日志审计表）
+
+DID文档结构
+{
+    "@context": "https://www.w3.org/ns/did/v1",
+    "id": "did:example:123456789abcdefghi",
+    "publicKey": [
+        {
+            "id": "did:example:123456789abcdefghi#keys-1",
+            "type": "Secp256k1VerificationKey2018",
+            "controller": "did:example:123456789abcdefghi",
+            "publicKeyBase58": "5u5SQEoKYzphH4A4j4tMvM2zE4tVijy1aSFRexjvqPky"
+        }
+    ],
+    "service": [
+        {
+            "id": "did:example:123456789abcdefghi#agent",
+            "type": "AgentService",
+        }
+    ]
+}

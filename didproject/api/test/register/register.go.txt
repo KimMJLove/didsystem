@@ -1,0 +1,81 @@
+package main
+
+import (
+    "bytes"
+    "encoding/json"
+    "fmt"
+    "io/ioutil"
+    "net/http"
+    "crypto/tls"
+    "time"
+)
+
+type DIDDocument struct {
+    Context   string   `json:"@context"`
+    ID        string   `json:"id"`
+    PublicKey []PubKey `json:"publicKey"`
+}
+
+type PubKey struct {
+    ID         string `json:"id"`
+    Type       string `json:"type"`
+    Controller string `json:"controller"`
+    Value      string `json:"value"`
+}
+
+func RegisterDID(didDocument DIDDocument, url string) (string, error) {
+    jsonBody, err := json.Marshal(didDocument)
+    if err != nil {
+        return "", err
+    }
+
+    // 创建HTTP请求
+    client := &http.Client{Timeout: 10 * time.Second, Transport: &http.Transport{
+        TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+    }}
+    req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonBody))
+    if err != nil {
+        return "", err
+    }
+    req.Header.Set("Content-Type", "application/json")
+
+    // 发送HTTP请求
+    resp, err := client.Do(req)
+    if err != nil {
+        return "", err
+    }
+    defer resp.Body.Close()
+
+    // 读取响应体
+    respBody, err := ioutil.ReadAll(resp.Body)
+    if err != nil {
+        return "", err
+    }
+
+    return string(respBody), nil
+}
+
+func main() {
+    // 创建DIDDocument
+    pubKey := PubKey{
+        ID:         "did:example:123456789abcdefghi#keys-1",
+        Type:       "Ed25519VerificationKey2018",
+        Controller: "did:example:123456789abcdefghi",
+        Value:      "bG9naW4gaGVsbG8gd29ybGQ=",
+    }
+    didDocument := DIDDocument{
+        Context:   "https://w3id.org/did/v1",
+        ID:        "did:example:123456789abcdefghi",
+        PublicKey: []PubKey{pubKey},
+    }
+
+    // 向DID注册中心注册DID
+    url := "https://example.com/did/register"
+    resp, err := RegisterDID(didDocument, url)
+    if err != nil {
+        fmt.Println("DID registration failed:", err)
+        return
+    }
+
+    fmt.Println("DID registration successful. Response:", resp)
+}

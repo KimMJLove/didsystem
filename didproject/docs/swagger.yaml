@@ -1,0 +1,9 @@
+basePath: /
+host: localhost:8000
+info:
+  contact: {}
+  description: 分布式数字身份系统
+  title: DIDapi
+  version: "1.0"
+paths: {}
+swagger: "2.0"
